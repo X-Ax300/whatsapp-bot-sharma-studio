@@ -3,27 +3,31 @@ const axios = require('axios');
 const app = express();
 app.use(express.json());
 
-const VERIFY_TOKEN = 'sharma_token_2024'; 
-const ACCESS_TOKEN = 'EAGmoQAdU2WoBO3Rjjy5fRijmi1stJPpN9jLozDXghmJ2C3RaaKZBNjrOlSgfes8YrCBSZCuhzQ79i0XlQEXi9WLK8SUWfMqkZB2c1xe5MdCYXfrfH5aZCXvxeE1ChC6WnOMF5a94fuckfNvGQacK1yFVnkgQM1rlK2pc9ZAl2ZCw5T6PXNwcnMnS3Jr4X65kiJSbZAj4BWTxF3XxYIxYStKr0TfsooKVHzNQKcg'; 
+// Usa variables de entorno (Config Vars de Heroku)
+const VERIFY_TOKEN = process.env.VERIFY_TOKEN; 
+const ACCESS_TOKEN = process.env.ACCESS_TOKEN; 
 
-// Verificación inicial del webhook
+// Verificación del webhook (GET)
 app.get('/webhook', (req, res) => {
+  console.log("Token recibido:", req.query['hub.verify_token']); // Para debug
   if (req.query['hub.verify_token'] === VERIFY_TOKEN) {
-    res.send(req.query['hub.challenge']);
+    console.log("Webhook verificado!");
+    res.status(200).send(req.query['hub.challenge']);
   } else {
+    console.error("Error: Token de verificación incorrecto");
     res.sendStatus(403);
   }
 });
 
-// Procesar mensajes entrantes
+// Procesar mensajes (POST)
 app.post('/webhook', (req, res) => {
-  const entry = req.body.entry[0];
-  const changes = entry.changes[0];
-  const message = changes.value.messages?.[0];
+  try {
+    const entry = req.body.entry[0];
+    const changes = entry.changes[0];
+    const message = changes.value.messages?.[0];
 
-  if (message && message.type === 'text') {
-    const userMessage = message.text.body.toLowerCase();
-    const responseMessage = `
+    if (message && message.type === 'text') {
+      const responseMessage = `
 🌟 *Bienvenido a Sharma Studio* 🌟 
 
 ¿En qué puedo ayudarte hoy? Responde con el número:
@@ -35,21 +39,26 @@ app.post('/webhook', (req, res) => {
 5. *Hablar con un Agente*  
 6. *Listados de precio*  
 7. *Cotización*  
-    `;
+      `;
 
-    // Enviar respuesta
-    axios.post(`https://graph.facebook.com/v18.0/${changes.value.metadata.phone_number_id}/messages`, {
-      messaging_product: "whatsapp",
-      to: message.from,
-      text: { body: responseMessage }
-    }, {
-      headers: {
-        'Authorization': `Bearer ${ACCESS_TOKEN}`,
-        'Content-Type': 'application/json'
-      }
-    });
+      axios.post(`https://graph.facebook.com/v18.0/${changes.value.metadata.phone_number_id}/messages`, {
+        messaging_product: "whatsapp",
+        to: message.from,
+        text: { body: responseMessage }
+      }, {
+        headers: {
+          'Authorization': `Bearer ${ACCESS_TOKEN}`,
+          'Content-Type': 'application/json'
+        }
+      });
+    }
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error en POST /webhook:", error);
+    res.sendStatus(500);
   }
-  res.sendStatus(200);
 });
 
-app.listen(3000, () => console.log('Server running'));
+// Usa el puerto de Heroku o 3000 localmente
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
