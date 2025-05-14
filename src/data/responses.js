@@ -3,7 +3,7 @@
  */
 
 const responses = {
-  welcome: `🌟 *Bienvenido a Sharma Studio & N-Capelli* 🌟 
+  welcome: `🌟 *Bienvenido a Sharma Studio* 🌟 
 
 1. *Diseño Gráfico*
 2. *Manejo de Redes*
@@ -12,9 +12,6 @@ const responses = {
 5. *Hablar con un Agente*
 6. *Listados de precio*
 7. *Cotización*
-8. *Descubrir mi rutina ideal para el cabello*
-9. *Tratamientos para caída, frizz o resequedad*
-10. *Productos para rizos, lisos o teñidos*
 
 👉 *Responde con el número del servicio que te interesa y con gusto te ayudaré.*
 
@@ -127,69 +124,7 @@ Por favor, envía esta información y te responderemos con una cotización detal
 
 0. Volver al menú principal`,
 
-  routine: `💇‍♀ ¡Genial! Te haré algunas preguntas rápidas para encontrar la rutina perfecta para ti.
-Responde con el número que se ajuste a ti:
-
-1. ¿Qué tipo de cabello tienes?
-⿡ Liso
-⿢ Ondulado
-⿣ Rizado
-⿤ Muy rizado o afro`,
-
-  routineConcern: `2. ¿Cuál es tu principal preocupación?
-⿡ Frizz
-⿢ Caída
-⿣ Puntas abiertas
-⿤ Resequedad
-⿥ Otro`,
-
-  routineRecommendation: `🎉 ¡Gracias por tu respuesta! Tu rutina ideal incluye estos productos:
-✔ Shampoo [Producto]
-✔ Mascarilla [Producto]
-✔ Aceite o Serum [Producto]
-
-🛍 ¡Compra ahora con 15% de descuento! 👉 [link tienda]
-Descuento válido por 48h
-
-0. Volver al menú principal`,
-
-  hairTreatments: `🌿 Tratamientos disponibles:
-
-💆‍♀ Para Frizz: Tratamiento anti-frizz y productos de alisado
-💇‍♀ Para Caída: Fórmulas reparadoras y anti-caída
-🌱 Para Resequedad: Hidratación profunda con aceites y mascarillas
-
-👉 Ver todos los tratamientos: [link tienda]
-
-¿Te gustaría saber más sobre alguno de estos tratamientos? Responde con el número:
-⿡ Frizz
-⿢ Caída
-⿣ Resequedad
-
-0. Volver al menú principal`,
-
-  hairProducts: `🌸 Productos para tu tipo de cabello:
-
-🌿 Para Cabello Rizado: Definición y hidratación para rizos perfectos
-✨ Para Cabello Liso: Alisado, brillo y control del frizz
-🎨 Para Cabello Teñido: Protección del color y restauración
-
-👉 Ver toda nuestra colección de productos: [link tienda]
-
-¿Te gustaría saber más sobre alguno? Responde con el número:
-⿡ Rizos
-⿢ Liso
-⿣ Teñido
-
-0. Volver al menú principal`,
-
-  reminder: `🔔 ¡Hola de nuevo!
-Solo quería recordarte que tu rutina personalizada sigue disponible con 15% de descuento 💖
-👉 ¡Compra ahora antes que termine el descuento! [link tienda]
-
-0. Volver al menú principal`,
-
-  closingSession: `Gracias por contactar a Sharma Studio & N-Capelli. ¡Esperamos poder servirte pronto! 
+  closingSession: `Gracias por contactar a Sharma Studio. ¡Esperamos poder servirte pronto! 
 
 Si necesitas algo más, no dudes en escribirnos nuevamente.`,
 
