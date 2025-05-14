@@ -1,15 +1,25 @@
 {
-    "name": "whatsapp-bot-sharma-studio",
-    "version": "1.0.0",
-    "description": "Bot de Whatsapp para el proyecto de sharma studio",
-    "main": "index.js",
-    "scripts": {
-        "start": "node index.js"
-    },
-    "author": "Alex30",
-    "license": "ISC",
-    "dependencies": {
-        "axios": "^1.6.2",
-        "express": "^4.18.2"
-    }
+  "name": "whatsapp-bot",
+  "version": "1.0.0",
+  "description": "WhatsApp chatbot with session management",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "vite": "^5.0.0",
+    "@vitejs/plugin-react": "^4.2.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
 }
