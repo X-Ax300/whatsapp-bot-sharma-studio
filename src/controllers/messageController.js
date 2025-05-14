@@ -66,18 +66,6 @@ function processMenuSelection(selection, session) {
         response = responses.quote;
         nextMenu = 'quote';
         break;
-      case '8':
-        response = responses.routine;
-        nextMenu = 'routine_type';
-        break;
-      case '9':
-        response = responses.hairTreatments;
-        nextMenu = 'hairTreatments';
-        break;
-      case '10':
-        response = responses.hairProducts;
-        nextMenu = 'hairProducts';
-        break;
       case '0':
         response = responses.closingSession;
         nextMenu = 'closed';
@@ -87,55 +75,7 @@ function processMenuSelection(selection, session) {
         break;
     }
   }
-  // Process routine flow
-  else if (currentMenu === 'routine_type') {
-    if (['1', '2', '3', '4'].includes(selection)) {
-      response = responses.routineConcern;
-      nextMenu = 'routine_concern';
-      session.hairType = selection;
-    } else {
-      response = responses.default;
-    }
-  }
-  else if (currentMenu === 'routine_concern') {
-    if (['1', '2', '3', '4', '5'].includes(selection)) {
-      response = responses.routineRecommendation;
-      nextMenu = 'routine_recommendation';
-      session.concern = selection;
-      
-      // Schedule reminder for 48 hours later
-      setTimeout(() => {
-        const userSession = sessionManager.getSession(session.phoneNumber);
-        if (userSession && !userSession.purchased) {
-          whatsappService.sendTextMessage(
-            session.phoneNumberId,
-            session.phoneNumber,
-            responses.reminder
-          );
-        }
-      }, 48 * 60 * 60 * 1000);
-    } else {
-      response = responses.default;
-    }
-  }
-  // Process hair treatments menu
-  else if (currentMenu === 'hairTreatments') {
-    if (['1', '2', '3'].includes(selection)) {
-      response = `Gracias por tu interés en nuestros tratamientos. Un especialista en cuidado capilar se pondrá en contacto contigo para brindarte información detallada.\n\n0. Volver al menú principal`;
-      nextMenu = currentMenu;
-    } else {
-      response = responses.default;
-    }
-  }
-  // Process hair products menu
-  else if (currentMenu === 'hairProducts') {
-    if (['1', '2', '3'].includes(selection)) {
-      response = `Gracias por tu interés en nuestros productos. Un asesor de belleza se pondrá en contacto contigo para recomendarte los productos ideales para tu tipo de cabello.\n\n0. Volver al menú principal`;
-      nextMenu = currentMenu;
-    } else {
-      response = responses.default;
-    }
-  }
+  
   // Return to main menu for '0'
   else if (selection === '0') {
     response = responses.welcome;
