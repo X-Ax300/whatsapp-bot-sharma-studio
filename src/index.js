@@ -2,10 +2,10 @@
  * Main application entry point
  */
 
-const express = require('express');
-const config = require('./config');
-const logger = require('./utils/logger');
-const webhookRoutes = require('./routes/webhook');
+import express from 'express';
+import config from './config/index.js';
+import logger from './utils/logger.js';
+import webhookRoutes from './routes/webhook.js';
 
 // Initialize Express app
 const app = express();
@@ -52,4 +52,4 @@ process.on('uncaughtException', (error) => {
   gracefulShutdown();
 });
 
-module.exports = app;
+export default app;

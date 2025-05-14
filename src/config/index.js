@@ -3,7 +3,8 @@
  */
 
 // Load environment variables from .env if available
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
 const config = {
   port: process.env.PORT || 3000,
@@ -24,4 +25,4 @@ if (!config.whatsapp.verifyToken || !config.whatsapp.accessToken) {
   process.exit(1);
 }
 
-module.exports = config;
+export default config;
