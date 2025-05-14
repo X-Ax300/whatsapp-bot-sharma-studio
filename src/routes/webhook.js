@@ -2,11 +2,12 @@
  * Routes for handling WhatsApp webhook requests
  */
 
-const express = require('express');
+import express from 'express';
+import whatsappService from '../services/whatsappService.js';
+import messageController from '../controllers/messageController.js';
+import logger from '../utils/logger.js';
+
 const router = express.Router();
-const whatsappService = require('../services/whatsappService');
-const messageController = require('../controllers/messageController');
-const logger = require('../utils/logger');
 
 /**
  * GET /webhook - Handle webhook verification
@@ -48,4 +49,4 @@ router.post('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

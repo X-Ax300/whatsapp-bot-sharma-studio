@@ -2,10 +2,10 @@
  * Controller for handling incoming WhatsApp messages
  */
 
-const whatsappService = require('../services/whatsappService');
-const sessionManager = require('../utils/sessionManager');
-const responses = require('../data/responses');
-const logger = require('../utils/logger');
+import whatsappService from '../services/whatsappService.js';
+import sessionManager from '../utils/sessionManager.js';
+import responses from '../data/responses.js';
+import logger from '../utils/logger.js';
 
 /**
  * Process menu selection and return appropriate response
@@ -198,6 +198,6 @@ async function handleIncomingMessage(messageData) {
   }
 }
 
-module.exports = {
+export default {
   handleIncomingMessage
 };

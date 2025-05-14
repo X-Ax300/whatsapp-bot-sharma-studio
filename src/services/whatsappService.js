@@ -2,9 +2,9 @@
  * Service for interacting with the WhatsApp API
  */
 
-const axios = require('axios');
-const config = require('../config');
-const logger = require('../utils/logger');
+import axios from 'axios';
+import config from '../config/index.js';
+import logger from '../utils/logger.js';
 
 /**
  * WhatsApp API service
@@ -68,4 +68,4 @@ class WhatsappService {
   }
 }
 
-module.exports = new WhatsappService();
+export default new WhatsappService();

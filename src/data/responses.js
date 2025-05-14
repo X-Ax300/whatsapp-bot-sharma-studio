@@ -196,4 +196,4 @@ Si necesitas algo más, no dudes en escribirnos nuevamente.`,
   default: `Lo siento, no he entendido tu respuesta. Por favor, elige una de las opciones del menú o ingresa "0" para volver al menú principal.`
 };
 
-module.exports = responses;
+export default responses;

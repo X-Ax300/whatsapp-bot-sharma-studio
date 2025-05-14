@@ -2,7 +2,7 @@
  * Session management utility for tracking user conversations
  */
 
-const logger = require('./logger');
+import logger from './logger.js';
 
 // In-memory session store - could be replaced with Redis or MongoDB for production
 const sessions = new Map();
@@ -98,4 +98,4 @@ setInterval(() => {
   sessionManager.cleanupSessions();
 }, 15 * 60 * 1000);
 
-module.exports = sessionManager;
+export default sessionManager;
