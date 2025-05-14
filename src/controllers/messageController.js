@@ -8,6 +8,16 @@ import responses from '../data/responses.js';
 import logger from '../utils/logger.js';
 
 /**
+ * Check if a message is a greeting
+ * @param {string} message - Message to check
+ * @returns {boolean} - Whether the message is a greeting
+ */
+function isGreeting(message) {
+  const greetings = ['hola', 'buenos dias', 'buen dia', 'buenas tardes', 'buenas noches', 'hi', 'hello'];
+  return greetings.some(greeting => message.toLowerCase().includes(greeting));
+}
+
+/**
  * Process menu selection and return appropriate response
  * @param {string} selection - User's menu selection
  * @param {Object} session - User's session data
@@ -17,6 +27,13 @@ function processMenuSelection(selection, session) {
   const currentMenu = session.currentMenu;
   let response = '';
   let nextMenu = currentMenu;
+
+  // Check for greeting first
+  if (isGreeting(selection)) {
+    response = responses.welcome;
+    nextMenu = 'main';
+    return { response, nextMenu };
+  }
 
   // Process main menu selections
   if (currentMenu === 'main') {
