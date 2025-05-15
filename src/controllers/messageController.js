@@ -13,7 +13,7 @@ import logger from '../utils/logger.js';
  * @returns {boolean} - Whether the message is a greeting
  */
 function isGreeting(message) {
-  const greetings = ['hola', 'buenos dias', 'buen dia', 'buenas tardes', 'buenas noches', 'hi', 'hello', 'hey', 'saludos', 'saludos cordiales', 'buenas', 'klk' ];
+  const greetings = ['hola', 'buenos dias', 'buen dia', 'buenas tardes', 'buenas noches', 'hi', 'hello'];
   return greetings.some(greeting => message.toLowerCase().includes(greeting));
 }
 
@@ -23,7 +23,6 @@ function isGreeting(message) {
  * @param {Object} session - User's session data
  * @returns {Object} - Response and next menu state
  */
-
 function processMenuSelection(selection, session) {
   const currentMenu = session.currentMenu;
   let response = '';
@@ -142,10 +141,14 @@ async function handleIncomingMessage(messageData) {
     const userPhoneNumber = message.from;
     const messageText = message.text.body.trim();
     
-    // Check if session has expired
-    if (sessionManager.hasSessionExpired(userPhoneNumber)) {
-      // Send welcome message for expired session
-      await whatsappService.sendTextMessage(phoneNumberId, userPhoneNumber, responses.welcome);
+    // Check if session has expired and message is not a greeting
+    if (sessionManager.hasSessionExpired(userPhoneNumber) && !isGreeting(messageText)) {
+      await whatsappService.sendTextMessage(
+        phoneNumberId,
+        userPhoneNumber,
+        "Tu sesión ha expirado. Por favor saluda nuevamente para comenzar."
+      );
+      return { success: true };
     }
     
     // Get or create user session

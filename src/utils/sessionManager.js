@@ -3,12 +3,15 @@
  */
 
 import logger from './logger.js';
+import whatsappService from '../services/whatsappService.js';
+import responses from '../data/responses.js';
 
 // In-memory session store - could be replaced with Redis or MongoDB for production
 const sessions = new Map();
 
 // Session timeout in milliseconds (10 minutes)
 const SESSION_TIMEOUT = 10 * 60 * 1000;
+const WARNING_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 
 const sessionManager = {
   /**
@@ -23,6 +26,18 @@ const sessionManager = {
     // Check if session exists and hasn't expired
     if (existingSession && (now - existingSession.lastActive) <= SESSION_TIMEOUT) {
       existingSession.lastActive = now;
+      
+      // Clear any existing timeout warnings
+      if (existingSession.warningTimeout) {
+        clearTimeout(existingSession.warningTimeout);
+      }
+      if (existingSession.expirationTimeout) {
+        clearTimeout(existingSession.expirationTimeout);
+      }
+      
+      // Set new warning and expiration timeouts
+      this.setSessionTimeouts(existingSession);
+      
       return existingSession;
     }
 
@@ -33,9 +48,44 @@ const sessionManager = {
       lastActive: now,
       history: []
     };
+    
     sessions.set(phoneNumber, newSession);
+    this.setSessionTimeouts(newSession);
     logger.debug(`Created new session for ${phoneNumber}`);
     return newSession;
+  },
+
+  /**
+   * Set warning and expiration timeouts for a session
+   * @param {Object} session - Session object
+   */
+  setSessionTimeouts(session) {
+    // Set warning timeout (5 minutes)
+    session.warningTimeout = setTimeout(async () => {
+      try {
+        await whatsappService.sendTextMessage(
+          session.phoneNumberId,
+          session.phoneNumber,
+          "¿Sigues ahí? Tu sesión se cerrará en 5 minutos por inactividad."
+        );
+      } catch (error) {
+        logger.error('Error sending session warning', error);
+      }
+    }, WARNING_TIMEOUT);
+
+    // Set expiration timeout (10 minutes)
+    session.expirationTimeout = setTimeout(async () => {
+      try {
+        await whatsappService.sendTextMessage(
+          session.phoneNumberId,
+          session.phoneNumber,
+          "Tu sesión ha expirado por inactividad. Por favor saluda nuevamente para comenzar."
+        );
+        this.endSession(session.phoneNumber);
+      } catch (error) {
+        logger.error('Error sending session expiration', error);
+      }
+    }, SESSION_TIMEOUT);
   },
 
   /**
@@ -67,7 +117,15 @@ const sessionManager = {
    * @param {string} phoneNumber - User's phone number
    */
   endSession(phoneNumber) {
-    if (sessions.has(phoneNumber)) {
+    const session = sessions.get(phoneNumber);
+    if (session) {
+      // Clear timeouts
+      if (session.warningTimeout) {
+        clearTimeout(session.warningTimeout);
+      }
+      if (session.expirationTimeout) {
+        clearTimeout(session.expirationTimeout);
+      }
       sessions.delete(phoneNumber);
       logger.debug(`Ended session for ${phoneNumber}`);
       return true;
@@ -97,7 +155,7 @@ const sessionManager = {
     
     sessions.forEach((session, phoneNumber) => {
       if (now - session.lastActive > SESSION_TIMEOUT) {
-        sessions.delete(phoneNumber);
+        this.endSession(phoneNumber);
         expiredCount++;
       }
     });
