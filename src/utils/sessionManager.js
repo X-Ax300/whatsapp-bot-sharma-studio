@@ -4,7 +4,6 @@
 
 import logger from './logger.js';
 import whatsappService from '../services/whatsappService.js';
-import responses from '../data/responses.js';
 
 // In-memory session store - could be replaced with Redis or MongoDB for production
 const sessions = new Map();
