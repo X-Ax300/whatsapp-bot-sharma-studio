@@ -7,8 +7,8 @@ import logger from './logger.js';
 // In-memory session store - could be replaced with Redis or MongoDB for production
 const sessions = new Map();
 
-// Session timeout in milliseconds (30 minutes)
-const SESSION_TIMEOUT = 30 * 60 * 1000;
+// Session timeout in milliseconds (10 minutes)
+const SESSION_TIMEOUT = 10 * 60 * 1000;
 
 const sessionManager = {
   /**
@@ -17,23 +17,25 @@ const sessionManager = {
    * @returns {Object} Session object
    */
   getSession(phoneNumber) {
-    // If session doesn't exist, create a new one
-    if (!sessions.has(phoneNumber)) {
-      const newSession = {
-        phoneNumber,
-        currentMenu: 'main',
-        lastActive: Date.now(),
-        history: []
-      };
-      sessions.set(phoneNumber, newSession);
-      logger.debug(`Created new session for ${phoneNumber}`);
-      return newSession;
+    const existingSession = sessions.get(phoneNumber);
+    const now = Date.now();
+
+    // Check if session exists and hasn't expired
+    if (existingSession && (now - existingSession.lastActive) <= SESSION_TIMEOUT) {
+      existingSession.lastActive = now;
+      return existingSession;
     }
 
-    // Return existing session and update last active timestamp
-    const session = sessions.get(phoneNumber);
-    session.lastActive = Date.now();
-    return session;
+    // Create new session if none exists or if expired
+    const newSession = {
+      phoneNumber,
+      currentMenu: 'main',
+      lastActive: now,
+      history: []
+    };
+    sessions.set(phoneNumber, newSession);
+    logger.debug(`Created new session for ${phoneNumber}`);
+    return newSession;
   },
 
   /**
@@ -74,6 +76,19 @@ const sessionManager = {
   },
 
   /**
+   * Check if a session has expired
+   * @param {string} phoneNumber - User's phone number
+   * @returns {boolean} - Whether the session has expired
+   */
+  hasSessionExpired(phoneNumber) {
+    const session = sessions.get(phoneNumber);
+    if (!session) return true;
+    
+    const now = Date.now();
+    return (now - session.lastActive) > SESSION_TIMEOUT;
+  },
+
+  /**
    * Clean up expired sessions
    */
   cleanupSessions() {
@@ -93,9 +108,9 @@ const sessionManager = {
   }
 };
 
-// Setup periodic cleanup of expired sessions (every 15 minutes)
+// Setup periodic cleanup of expired sessions (every 5 minutes)
 setInterval(() => {
   sessionManager.cleanupSessions();
-}, 15 * 60 * 1000);
+}, 5 * 60 * 1000);
 
 export default sessionManager;

@@ -13,7 +13,7 @@ import logger from '../utils/logger.js';
  * @returns {boolean} - Whether the message is a greeting
  */
 function isGreeting(message) {
-  const greetings = ['hola', 'buenos dias', 'buen dia', 'buenas tardes', 'buenas noches', 'hi', 'hello'];
+  const greetings = ['hola', 'buenos dias', 'buen dia', 'buenas tardes', 'buenas noches', 'hi', 'hello', 'hey', 'saludos', 'saludos cordiales', 'buenas', 'klk' ];
   return greetings.some(greeting => message.toLowerCase().includes(greeting));
 }
 
@@ -23,6 +23,7 @@ function isGreeting(message) {
  * @param {Object} session - User's session data
  * @returns {Object} - Response and next menu state
  */
+
 function processMenuSelection(selection, session) {
   const currentMenu = session.currentMenu;
   let response = '';
@@ -75,7 +76,28 @@ function processMenuSelection(selection, session) {
         break;
     }
   }
-  
+  // Process routine flow
+  else if (currentMenu === 'routine_concern') {
+    if (['1', '2', '3', '4', '5'].includes(selection)) {
+      response = responses.routineRecommendation;
+      nextMenu = 'routine_recommendation';
+      session.concern = selection;
+      
+      // Schedule reminder for 48 hours later
+      setTimeout(() => {
+        const userSession = sessionManager.getSession(session.phoneNumber);
+        if (userSession && !userSession.purchased) {
+          whatsappService.sendTextMessage(
+            session.phoneNumberId,
+            session.phoneNumber,
+            responses.reminder
+          );
+        }
+      }, 48 * 60 * 60 * 1000);
+    } else {
+      response = responses.default;
+    }
+  }
   // Return to main menu for '0'
   else if (selection === '0') {
     response = responses.welcome;
@@ -119,6 +141,12 @@ async function handleIncomingMessage(messageData) {
     const phoneNumberId = value.metadata.phone_number_id;
     const userPhoneNumber = message.from;
     const messageText = message.text.body.trim();
+    
+    // Check if session has expired
+    if (sessionManager.hasSessionExpired(userPhoneNumber)) {
+      // Send welcome message for expired session
+      await whatsappService.sendTextMessage(phoneNumberId, userPhoneNumber, responses.welcome);
+    }
     
     // Get or create user session
     const session = sessionManager.getSession(userPhoneNumber);
