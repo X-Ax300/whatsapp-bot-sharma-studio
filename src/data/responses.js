@@ -3,7 +3,10 @@
  */
 
 const responses = {
-  welcome: `🌟 *Bienvenido a Sharma Studio* 🌟 
+  welcome: `🌟*Hola, soy tu asistente virtual.
+Bienvenido a Sharma Studio* 🌟
+
+Estamos aquí para ayudarte con tus necesidades de diseño gráfico y más.
 
 1. *Diseño Gráfico*
 2. *Manejo de Redes*
@@ -13,10 +16,7 @@ const responses = {
 6. *Listados de precio*
 7. *Cotización*
 
-👉 *Responde con el número del servicio que te interesa y con gusto te ayudaré.*
-
-*Métodos de pago:*
-Como desea pagar: link de pago, Tarjetas de crédito, transferencia.`,
+👉 *Responde con el número del servicio que te interesa y con gusto te ayudaré.*`,
 
   designGraphic: `*Diseño Gráfico* 🎨
   
